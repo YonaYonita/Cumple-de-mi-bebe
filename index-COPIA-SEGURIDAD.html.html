@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Para vos 💚</title>
+<style>
+:root{
+  --aqua:#7fe3d1; --aqua2:#c9f7ef; --deep:#176b63; --cream:#fffdf8;
+  --ink:#24413e; --shadow:0 15px 40px rgba(23,107,99,.15);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,serif;background:#7BFFD6;color:var(--ink)}
+section{padding:75px 18px;max-width:1050px;margin:auto}
+.hero{text-align:center;min-height:92vh;display:flex;align-items:center;justify-content:center}
+.hero-card{background:rgba(255,255,255,.82);padding:55px 25px;border-radius:32px;box-shadow:var(--shadow);border:2px solid var(--aqua2)}
+h1{font-size:clamp(3rem,9vw,6.5rem);margin:10px 0;color:var(--deep)}
+h2{font-size:2.4rem;color:var(--deep);text-align:center}
+.subtitle{text-align:center;font-size:1.2rem}
+.btn{border:0;border-radius:999px;padding:13px 23px;background:var(--deep);color:white;font-size:1rem;cursor:pointer;box-shadow:0 7px 18px #176b6340}
+.btn:hover{transform:translateY(-2px)}
+.polaroid-wrap{text-align:center}
+.polaroid{background:white;padding:13px 13px 20px;width:min(330px,82vw);margin:auto;box-shadow:var(--shadow);transform:rotate(-1.5deg)}
+.polaroid img{width:100%;height:320px;object-fit:cover;background:#d9f5ef}
+.caption{font-size:1.15rem;margin-top:15px}
+.arrows{display:flex;justify-content:center;gap:14px;margin:22px}
+.arrow{width:45px;height:45px;border:0;border-radius:50%;background:var(--aqua);font-size:1.3rem;cursor:pointer}
+.dots{margin:12px}
+.wishes{display:flex;flex-direction:column;gap:14px}
+.wish-note{display:block;margin-top:7px;font-size:.85rem;opacity:.55;font-style:italic}
+.wish{background:#fff;padding:20px;border-radius:20px;box-shadow:var(--shadow);font-size:1.05rem}
+.wheel-box{text-align:center}
+canvas{max-width:90vw}
+.wheel-container{
+  position:relative;
+  width:360px;
+  max-width:90vw;
+  margin:auto;
+}
+
+.wheel-container canvas{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+.wheel-pointer{
+  position:absolute;
+  top:-14px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:10;
+  font-size:2.5rem;
+  color:#176b63;
+  line-height:1;
+  pointer-events:none;
+}
+.result{display:none;background:white;border:3px solid var(--aqua);padding:22px;border-radius:22px;max-width:520px;margin:25px auto;box-shadow:var(--shadow)}
+.envelope-area{text-align:center}
+.envelope{position:relative;width:260px;height:165px;margin:35px auto;cursor:pointer}
+.env-body{position:absolute;inset:0;background:#ffc1d9;border-radius:8px;box-shadow:var(--shadow)}
+.env-flap{position:absolute;top:0;left:0;border-left:130px solid transparent;border-right:130px solid transparent;border-top:85px solid #ff9fc4;z-index:2;transform-origin:top;transition:.7s}
+.envelope.open .env-flap{transform:rotateX(180deg)}
+.letter{display:none;background:#ffe6f3;color:#5c3150;padding:30px;border-radius:20px;margin:20px auto;box-shadow:var(--shadow);line-height:1.8;white-space:pre-wrap}
+.envelope.open + .letter{display:block}
+.songs{display:grid;gap:16px}
+.song{background:white;border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.counter{text-align:center;background:rgba(255,255,255,.7);border-radius:30px;padding:30px}
+.counter-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:20px}
+.unit{background:white;border-radius:15px;padding:15px}.num{font-size:2rem;font-weight:bold;color:var(--deep)}
+.scratch-wrap{position:relative;width:min(600px,92vw);height:350px;margin:auto;border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.scratch-wrap img{width:100%;height:100%;object-fit:cover}
+#scratch{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.final{text-align:center;min-height:65vh;display:flex;align-items:center;justify-content:center}
+.final h2{font-size:clamp(2.5rem,7vw,5rem)}
+.final-big{
+  font-size:1em;
+}
+
+.final-small{
+  display:inline-block;
+  font-size:.55em;
+  line-height:1.5;
+  margin-top:15px;
+}
+footer{text-align:center;padding:30px}
+.editor{background:#153f3b;color:white;padding:35px 18px}
+.editor-inner{max-width:1000px;margin:auto}
+.editor h2{color:#bff7ed}
+label{display:block;margin:14px 0 6px}
+input,textarea{width:100%;padding:12px;border-radius:10px;border:0;font:inherit}
+textarea{min-height:110px}
+.editor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.note{opacity:.85;font-size:.92rem}
+@media(max-width:650px){.counter-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<section class="hero">
+<div class="hero-card">
+<div style="font-size:3rem"></div>
+<h1 id="heroTitle">Feliz cumpleaños, mi amor</h1>
+<p class="subtitle" id="heroSubtitle">Hoy quiero regalarte un pedacito de todo lo que siento por vos.</p>
+<button class="btn" onclick="startPage()">🍰 pedí 3 deseos! 🍰</button>
+</div>
+</section>
+
+<section id="polaroids">
+<h2>Gracias por nacer amorcito</h2>
+<div class="polaroid-wrap">
+<div class="polaroid">
+<img id="photo" src="" alt="Tu foto">
+<div class="caption" id="photoCaption">Nuestro primer recuerdo 💚</div>
+</div>
+<div class="arrows"><button class="arrow" onclick="changePhoto(-1)">←</button><div class="dots" id="dots">● ○ ○ ○ ○</div><button class="arrow" onclick="changePhoto(1)">→</button></div>
+</div>
+</section>
+
+<section>
+<h2>Mis deseos para vos</h2>
+<p class="subtitle">Una listita sobre las cosas que desearía que obtengas :3</p>
+<div class="wishes" id="wishes"></div>
+</section>
+
+<section>
+<h2>Gira para ganar un vale</h2>
+<div class="wheel-box">
+<div class="wheel-container">
+  <canvas id="wheel" width="360" height="360"></canvas>
+</div>
+<br>
+<button class="btn" onclick="spin()">Gira Gira Gira :3</button>
+<div class="result" id="result"></div>
+</div>
+</section>
+
+<section>
+<h2>Toca para leer</h2>
+<div class="envelope-area">
+<div class="envelope" id="envelope" onclick="this.classList.toggle('open')">
+<div class="env-body"></div><div class="env-flap"></div>
+<div style="position:absolute;z-index:3;left:0;right:0;top:65px;font-size:2rem">💜</div>
+</div>
+<div class="letter" id="letter"></div>
+</div>
+</section>
+
+<section>
+<h2>Canciones que me hacen pensar en vos :3</h2>
+<p class="subtitle">💜</p>
+<div class="songs" id="songs"></div>
+</section>
+
+<section>
+<h2>Días juntos</h2>
+<p class="subtitle">♡ El tiempo que llevamos en la vida del otro desde que nos conocimos ♡</p>
+<div class="counter">
+<div class="counter-grid">
+<div class="unit"><div class="num" id="months">0</div>meses</div>
+<div class="unit"><div class="num" id="days">0</div>días</div>
+<div class="unit"><div class="num" id="hours">0</div>horas</div>
+<div class="unit"><div class="num" id="minutes">0</div>minutos</div>
+<div class="unit"><div class="num" id="seconds">0</div>segundos</div>
+</div>
+</div>
+</section>
+
+<section>
+<h2>Hay algo escondido >:3</h2>
+<p class="subtitle">nosotros en un universo alternativo wiii</p>
+<div class="scratch-wrap"><img id="scratchImage" src="" alt="Imagen escondida"><canvas id="scratch"></canvas></div>
+</section>
+
+<section class="final">
+<div><div style="font-size:3rem"></div><h2 id="finalMessage">
+  <span class="final-big">TE AMO</span><br>
+  <span class="final-small">ʚ Feliz cumpleaños amor, te regalo el mundo entero y todo lo que soy ɞ ɞ</span>
+</h2></div>
+</section>
+
+<footer>Hecho con cada pedacito de mi corazón</footer>
+
+<section class="editor">
+<div class="editor-inner">
+<h2>🛠️ Editor de tu página</h2>
+<p class="note">Todo lo que cambies acá queda guardado en este navegador. Las imágenes se cargan desde tu computadora y también quedan guardadas localmente.</p>
+<div class="editor-grid">
+<div>
+<label>Título principal</label><input id="eTitle">
+<label>Subtítulo</label><textarea id="eSubtitle"></textarea>
+<label>Carta</label><textarea id="eLetter"></textarea>
+<label>Mensaje final</label><textarea id="eFinal"></textarea>
+<label>Fecha y hora de inicio</label><input id="eDate" type="datetime-local">
+</div>
+<div>
+<label>5 fotos + mensajes</label>
+<div id="photoEditors"></div>
+<label>Imagen de la raspadita</label><input id="scratchUpload" type="file" accept="image/*">
+<label>Canciones de Spotify (una por línea: nombre | enlace)</label><textarea id="eSongs"></textarea>
+</div>
+<div>
+<label>Deseos (uno por línea: emoji | texto)</label><textarea id="eWishes"></textarea>
+<label>Opciones de la rueda (una por línea: opción | mensaje)</label><textarea id="eWheel"></textarea>
+<button class="btn" style="margin-top:15px" onclick="saveAll()">Guardar cambios 💾</button>
+<button class="btn" style="margin-top:15px;background:#6b8884" onclick="resetAll()">Restaurar ejemplo</button>
+</div>
+</div>
+</div>
+</section>
+
+<script>
+function startPage(){
+  document.getElementById('polaroids').scrollIntoView({behavior:'smooth'});
+  confetti();
+}
+
+function confetti(){
+  const colors = [
+  "#ff4d6d",
+  "#ffb703",
+  "#8338ec",
+  "#3a86ff",
+  "#06d6a0",
+  "#ff70a6",
+  "#ffd166",
+  "#cdb4db"
+];
+
+  for(let i = 0; i < 120; i++){
+    const piece = document.createElement("div");
+
+    piece.style.position = "fixed";
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.top = "-20px";
+    piece.style.width = "8px";
+    piece.style.height = "12px";
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.zIndex = "9999";
+    piece.style.pointerEvents = "none";
+    piece.style.transform = `rotate(${Math.random()*360}deg)`;
+
+    document.body.appendChild(piece);
+
+    const duration = 2000 + Math.random() * 2000;
+    const x = (Math.random() - 0.5) * 300;
+
+    piece.animate([
+      { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+      { transform: `translate(${x}px, 110vh) rotate(${Math.random()*720}deg)`, opacity: 0 }
+    ], {
+      duration: duration,
+      easing: "cubic-bezier(.2,.8,.3,1)"
+    });
+
+    setTimeout(() => piece.remove(), duration);
+  }
+}
+const defaultData={
+ title:"Feliz cumpleaños, mi amor",
+ subtitle:"Hoy quiero regalarte un pedacito de todo lo que siento por vos.",
+ photos:Array.from({length:5},(_,i)=>({src:"",caption:["Un recuerdo que amo 💚","Una de mis fotos favoritas 🥺","Vos y yo ✨","Un momento que guardo conmigo 🌿","Por muchos recuerdos más 💌"][i]})),
+ wishes:["🌱 Que cumplas muchos de tus sueños","🎬 Que nunca te falten proyectos que te hagan feliz","💚 Que siempre tengas motivos para sonreír","✨ Que este año te sorprenda para bien"],
+ wheel:[
+ ["Elegí una película para ver juntos","Hoy la elección es tuya 🎬💚"],
+ ["Te debo un mimo","Canjeable cuando quieras 🥺"],
+ ["Elegí nuestra próxima comida","Esta vez decidís vos 🍕"],
+ ["Un abrazo largo","Sin límite de tiempo 💚"],
+ ["Una cita sorpresa","Yo me encargo ✨"]
+ ],
+ letter:"Acá va todo lo que quiero decirte...",
+ songs:["Canción 1 | https://open.spotify.com/","Canción 2 | https://open.spotify.com/"],
+ date:"2025-12-31T20:00",
+ scratch:"",
+ final:"Te amo muchísimo.\nFeliz cumpleaños, mi amor. 💚"
+};
+let data=JSON.parse(localStorage.getItem("birthdayPage")||"null")||defaultData;
+let pIndex=0, spinning=false, wheelRotation=0;
+
+function render(){
+ document.getElementById("heroTitle").textContent=data.title;
+ document.getElementById("heroSubtitle").textContent=data.subtitle;
+ document.getElementById("letter").textContent=data.letter;
+ const finalLines=data.final.split("\n");
+
+document.getElementById("finalMessage").innerHTML=
+  `<span class="final-big">${finalLines[0]||""}</span><br>
+   <span class="final-small">${finalLines.slice(1).join("<br>")}</span>`;
+
+ renderPhoto();
+ renderWishes();
+ renderSongs();
+
+ wheelRotation=0;
+ drawWheel(0);
+
+ setupEditor();
+ setupScratch();
+}
+function renderPhoto(){
+ const p=data.photos[pIndex]; const im=document.getElementById("photo");
+ im.src=p.src||"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><rect width='100%' height='100%' fill='#d9f5ef'/><text x='50%' y='48%' text-anchor='middle' font-size='38' fill='#176b63'>Subí tu foto 💚</text></svg>`);
+ document.getElementById("photoCaption").textContent=p.caption;
+ document.getElementById("dots").textContent=data.photos.map((_,i)=>i===pIndex?"●":"○").join(" ");
+}
+function changePhoto(n){pIndex=(pIndex+n+5)%5;renderPhoto()}
+function renderWishes(){
+  document.getElementById("wishes").innerHTML=data.wishes.map(x=>{
+    let [emoji,text,note]=x.split("|");
+    return `<div class="wish">
+      <div>${emoji.trim()} ${text.trim()}</div>
+      ${note ? `<small style="display:block;margin-top:7px;font-size:.75rem;opacity:.55;font-style:italic;">${note.trim()}</small>` : ""}
+    </div>`;
+  }).join("");
+}
+function renderSongs(){document.getElementById("songs").innerHTML=data.songs.map(x=>{let [name,url]=x.split("|");return `<div class="song"><b>${name||"Canción"}</b><br><a href="${url||"#"}" target="_blank" rel="noopener">Escuchar en Spotify 🎧</a></div>`}).join("")}
+function drawWheel(rotation=0){
+  const c=document.getElementById("wheel");
+  const ctx=c.getContext("2d");
+  const N=data.wheel.length;
+
+  if(!N) return;
+
+  const r=170;
+  const segment=2*Math.PI/N;
+
+  ctx.clearRect(0,0,360,360);
+
+  ctx.save();
+  ctx.translate(180,180);
+  ctx.rotate(rotation);
+
+  const wheelColors=[
+    "#ffb3c6",
+    "#ffd166",
+    "#a8dadc",
+    "#cdb4db",
+    "#bde0fe",
+    "#caffbf",
+    "#ffc8dd",
+    "#f1c0e8"
+  ];
+
+  data.wheel.forEach((o,i)=>{
+    // El centro de la opción 0 queda EXACTAMENTE arriba.
+    const center=-Math.PI/2+i*segment;
+    const start=center-segment/2;
+    const end=center+segment/2;
+
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.arc(0,0,r,start,end);
+    ctx.closePath();
+
+    ctx.fillStyle=wheelColors[i%wheelColors.length];
+    ctx.fill();
+
+    ctx.strokeStyle="#176b63";
+    ctx.lineWidth=1;
+    ctx.stroke();
+
+    // Texto
+    ctx.save();
+    ctx.rotate(center);
+
+    ctx.textAlign="right";
+    ctx.textBaseline="middle";
+    ctx.fillStyle="#176b63";
+    ctx.font="bold 13px Georgia";
+
+    ctx.fillText(
+      o[0].slice(0,22),
+      155,
+      0
+    );
+
+    ctx.restore();
+  });
+
+  ctx.restore();
+}
+
+
+function spin(){
+  if(spinning || !data.wheel.length) return;
+
+  spinning=true;
+
+  const winner=Math.floor(Math.random()*data.wheel.length);
+  const N=data.wheel.length;
+  const segment=2*Math.PI/N;
+
+  const startRotation=wheelRotation;
+
+  // Esta es la rotación exacta que pone
+  // el centro del premio ganador debajo de la flecha.
+  const winnerRotation=-winner*segment;
+
+  // Entre 5 y 7 vueltas completas antes de detenerse.
+  const extraTurns=5+Math.random()*2;
+
+  let targetRotation=winnerRotation;
+
+  // Aseguramos que siempre avance hacia adelante.
+  while(targetRotation<=startRotation){
+    targetRotation+=2*Math.PI;
+  }
+
+  targetRotation+=extraTurns*2*Math.PI;
+
+  const duration=3800;
+  const startTime=performance.now();
+
+  function animate(now){
+    const elapsed=now-startTime;
+    const progress=Math.min(elapsed/duration,1);
+
+    // Suavizado: rápido al principio y frenando al final.
+    const eased=1-Math.pow(1-progress,3);
+
+    wheelRotation=
+      startRotation+
+      (targetRotation-startRotation)*eased;
+
+    drawWheel(wheelRotation);
+
+    if(progress<1){
+      requestAnimationFrame(animate);
+      return;
+    }
+
+    // Dejamos la rueda exactamente en la posición final.
+    wheelRotation=targetRotation;
+    drawWheel(wheelRotation);
+
+    const o=data.wheel[winner];
+
+    document.getElementById("result").style.display="block";
+    document.getElementById("result").innerHTML=
+      `<h3> ${o[0]}</h3><p>${o[1]}</p>`;
+
+    spinning=false;
+  }
+
+  requestAnimationFrame(animate);
+}
+function updateCounter(){
+ let start=new Date(data.date), now=new Date(); if(isNaN(start))return;
+ let cursor=new Date(start), months=0;
+ while(new Date(cursor.getFullYear(),cursor.getMonth()+1,cursor.getDate(),cursor.getHours(),cursor.getMinutes(),cursor.getSeconds())<=now){cursor.setMonth(cursor.getMonth()+1);months++}
+ let diff=now-cursor; if(diff<0)diff=0;
+ let days=Math.floor(diff/86400000);diff%=86400000;let hours=Math.floor(diff/3600000);diff%=3600000;let mins=Math.floor(diff/60000);let secs=Math.floor((diff%60000)/1000);
+ ["months","days","hours","minutes","seconds"].forEach((id,i)=>document.getElementById(id).textContent=[months,days,hours,mins,secs][i]);
+}
+setInterval(updateCounter,1000);
+
+function setupEditor(){
+ eTitle.value=data.title;eSubtitle.value=data.subtitle;eLetter.value=data.letter;eFinal.value=data.final;eDate.value=data.date;eSongs.value=data.songs.join("\n");eWishes.value=data.wishes.join("\n");eWheel.value=data.wheel.map(x=>x.join(" | ")).join("\n");
+ document.getElementById("photoEditors").innerHTML=data.photos.map((p,i)=>`<div style="background:#245a55;padding:10px;border-radius:10px;margin:8px 0"><label>Polaroid ${i+1}</label><input type="file" accept="image/*" onchange="loadPhoto(event,${i})"><textarea id="pc${i}" placeholder="Mensaje">${p.caption}</textarea></div>`).join("");
+}
+function loadPhoto(ev,i){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{data.photos[i].src=r.result;saveDraft();renderPhoto()};r.readAsDataURL(f)}
+function saveDraft(){localStorage.setItem("birthdayPage",JSON.stringify(data))}
+function saveAll(){
+ data.title=eTitle.value;data.subtitle=eSubtitle.value;data.letter=eLetter.value;data.final=eFinal.value;data.date=eDate.value;
+ data.wishes=eWishes.value.split("\n").filter(Boolean);data.songs=eSongs.value.split("\n").filter(Boolean);
+ data.wheel=eWheel.value.split("\n").filter(Boolean).map(x=>{let [a,...b]=x.split("|");return [a.trim(),b.join("|").trim()]});
+ data.photos.forEach((p,i)=>p.caption=document.getElementById("pc"+i).value);
+ saveDraft();render();alert("¡Guardado! 💚")
+}
+function resetAll(){if(confirm("¿Restaurar el contenido de ejemplo?")){data=JSON.parse(JSON.stringify(defaultData));saveDraft();location.reload()}}
+function setupScratch(){
+ const img=document.getElementById("scratchImage");img.src=data.scratch||"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'><rect width='100%' height='100%' fill='#bff1e7'/><text x='50%' y='50%' text-anchor='middle' font-size='42' fill='#176b63'>Tu imagen sorpresa 💚</text></svg>`);
+ const c=document.getElementById("scratch"),wrap=c.parentElement;c.width=wrap.clientWidth;c.height=wrap.clientHeight;const ctx=c.getContext("2d");ctx.globalCompositeOperation="source-over";ctx.fillStyle="#6b8884";ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle="#fff";ctx.font="bold 25px Georgia";ctx.textAlign="center";ctx.fillText("Raspá para ver",c.width/2,c.height/2);
+ let down=false;function scratch(e){if(!down)return;let r=c.getBoundingClientRect(),x=(e.clientX??e.touches[0].clientX)-r.left,y=(e.clientY??e.touches[0].clientY)-r.top;ctx.globalCompositeOperation="destination-out";ctx.beginPath();ctx.arc(x,y,28,0,Math.PI*2);ctx.fill()}
+ c.onpointerdown=()=>down=true;c.onpointerup=()=>down=false;c.onpointerleave=()=>down=false;c.onpointermove=scratch;
+ document.getElementById("scratchUpload").onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{data.scratch=r.result;saveDraft();setupScratch()};r.readAsDataURL(f)}
+}
+render();
+</script>
+</body>
+</html>
